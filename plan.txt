@@ -1,0 +1,18 @@
+=> Sign In Page => Gmail, Password, 
+=> signIn with email and password give access token, you would have to send that to auth provider in order to authenticate
+=> firebase can also give google signIns but we already have a package for it
+=> check out firebase google, microsoft and githubs logins
+=> make routes and dynamic frontend
+=> firebase auth is slow but gives for many, github and google, 
+=> verify the user code, through the form, and may be given as guest
+=> a GUEST => some temporary id, for some time to use and store his info, all his saved events
+=> phase 2 => add groups for the group meetings
+=> notification based system => through mail => no sense => through calendar yes => maker the calendar with saved events of the user
+=> tech stack => firebase, vue complexities, pinia, express, google free apis
+=> codeforces see and solve, dsa practice, cs fundamentals, maths-pro,stat,linearAlgebra, projects, 
+=> CI/CD => pipelines and study all the basics
+
+NEW FEATURES TO IMPLEMENT
+*********************************************************************************************************
+1. design of login page, set up of db => use firebase
+2. while making search input bar, placeholder should be dynamic, and animation to be added, like 

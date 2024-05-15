@@ -1,18 +1,174 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+<div>
+  <nav class="navbar">
+    <div class="uppernav">
+      <a href="https://www.google.com" style="text-decoration: none;">
+        <img src="../assets/logoeventoh.png" alt="logo" class="logo">
+      </a>
+      <input type="text" v-model="searchedQuery" placeholder="Search Events" class="search-input">
+      <router-link to="/create" class="nav-item">Post Event</router-link>
+      <div class="nav-item" @click="showWishlist">Wishlist</div>
+      <div class="nav-item profile">
+        <p>{{store.userName}}</p>
+        {{ console.log(store.userName)}} 
+      </div>
+    </div>
+</nav>
+
+
+ <!-- events div -->
+ <div v-for="event in events" :key="event.id">
+    <h3>{{event.eventName}}----{{ event.clubName }}</h3>
+    <p>{{ formatDate(event.date) }}</p>
+    <p>{{ formatTime(event.startTime) }} - {{ formatTime(event.endTime) }}</p>
+    <button type="button" @click="addToWishlist(event)">add to wishlist</button>
+    
+    <br>
+    <br>
+ </div>
+</div>
+
 </template>
 
-<script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+<script setup>
+import { computed, ref, onMounted } from 'vue';
+import {useStore} from '../store/store.js'
+import { addDoc, collection } from 'firebase/firestore';
+import { db } from '../firebaseConfig.js';
+import { auth } from '../firebaseConfig.js';
+// import router from '@/router';
+import { useRouter } from 'vue-router';
+const events = ref([]);
+const store = useStore();
+const searchedQuery = ref('');
+const router = useRouter();
 
-export default {
-  name: 'HomeView',
-  components: {
-    HelloWorld
-  }
+const addToWishlist = async (event) => {
+  // only way is to add document in collection called wishlist
+  // single time running, 
+  try {
+      console.log(event.date, " ", event.startTime);
+      const docRef = await addDoc(collection(db, 'wishlist'), {
+        eventName: event.eventName,
+        date: (event.date), // Convert date string to Date object
+        startTime: (event.startTime), // Combine with a dummy date and convert to Date object
+        endTime: (event.endTime), // Combine with a dummy date and convert to Date object
+        clubName: event.clubName,
+        description: event.description,
+        venue: event.venue,
+      });
+      console.log('Event added with ID: ', docRef.id);
+      
+    } catch (error) {
+      console.error('Error adding event: ', error);
+    }
+
 }
+
+const searchEvent = (searchedQuery) => {
+  console.log("current search is based on the following query: ", searchedQuery);
+}
+
+const showWishlist = () => {
+  console.log("Wishlist function has been called");
+  // this will be async function => send and get req from db
+  
+  router.push({path: '/wishlist'})
+}
+// Helper function to format date
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp.seconds * 1000); // Convert Firestore timestamp to JavaScript Date object
+  const day = date.getDate().toString().padStart(2, '0'); // Get day (with leading zero)
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Get month (with leading zero)
+  const year = date.getFullYear(); // Get full year
+
+  return `${day}/${month}/${year}`;
+};
+
+const formatTime = (timestamp) => {
+  const date = new Date(timestamp.seconds * 1000); // Convert Firestore timestamp to JavaScript Date object
+
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+
+  // Convert hours to 12-hour format
+  hours = hours % 12;
+  hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+  // Pad minutes with leading zero if necessary
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+
+  return `${hours}:${minutes} ${ampm}`;
+};
+
+// // Usage example
+// const timestamp = { seconds: 1715020200, nanoseconds: 0 };
+// console.log(formatTime(timestamp)); // Output: "06:30 PM"
+
+
+onMounted(async () => {
+  await store.fetchUpcomingEvents();
+  events.value = store.events; 
+  store.userName = localStorage.getItem('userName');
+  store.userEmail = localStorage.getItem('userEmail');
+  store.photoURL = localStorage.getItem('photoURL');
+})
 </script>
+
+<!--  -->
+<style>
+.navbar {
+  height: 80px; /* Adjust height as needed */
+  background-color: #fff; /* White background */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.uppernav {
+  display: flex;
+  align-items: center;
+  padding-right: 20px; /* Add padding for spacing */
+}
+
+.logo {
+  height: 80px; /* Adjust height as needed */
+  margin-right: 20px; /* Add margin for spacing */
+}
+
+.search-input {
+  flex: 1; /* Take remaining space */
+  height: 30px;
+  padding: 10px; /* Add padding for input */
+  border: 1px solid #ccc; /* Add border for input */
+  border-radius: 5px; /* Rounded corners */
+  font-size: 16px; /* Adjust font size */
+  justify-content: center;
+}
+
+.nav-item {
+  cursor: pointer;
+  padding: 10px 20px; /* Add padding for spacing */ /* Add margin for spacing */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition */
+  text-decoration: none;
+  color: black;
+  
+}
+
+.nav-item:hover {
+  background-color: #f0f0f0; /* Light gray background on hover */
+}
+
+.profile {
+  background-color: #007bff; /* Blue background */
+  color: #fff; /* White text */
+}
+
+.profile:hover {
+  background-color: #0056b3; /* Darker blue background on hover */
+}
+
+.test{
+  background-color: #fea8cd;
+}
+</style>
