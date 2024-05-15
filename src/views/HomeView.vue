@@ -17,15 +17,22 @@
 
 
  <!-- events div -->
- <div v-for="event in events" :key="event.id">
-    <h3>{{event.eventName}}----{{ event.clubName }}</h3>
-    <p>{{ formatDate(event.date) }}</p>
-    <p>{{ formatTime(event.startTime) }} - {{ formatTime(event.endTime) }}</p>
-    <button type="button" @click="addToWishlist(event)">add to wishlist</button>
-    
-    <br>
-    <br>
- </div>
+ <div class="events-grid">
+    <div v-for="event in events" :key="event.id" class="event-card">
+      <div class="event-image">
+        <!-- Assuming you have an image URL in the event object -->
+        <img src="../assets/logoeventoh.png" alt="Event Image">
+      </div>
+      <div class="event-details">
+        <h3>{{ event.eventName }}</h3>
+        <h4>{{ event.clubName }}</h4>
+        <p>{{ formatDate(event.date) }}</p>
+        <p>{{ formatTime(event.startTime) }} - {{ formatTime(event.endTime) }}</p>
+        <p>{{ event.venue }}</p>
+        <button type="button" @click="addToWishlist(event)">Add to Wishlist</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 </template>
@@ -72,7 +79,7 @@ const searchEvent = (searchedQuery) => {
 const showWishlist = () => {
   console.log("Wishlist function has been called");
   // this will be async function => send and get req from db
-  
+
   router.push({path: '/wishlist'})
 }
 // Helper function to format date
@@ -117,7 +124,7 @@ onMounted(async () => {
 </script>
 
 <!--  -->
-<style>
+<style scoped>
 .navbar {
   height: 80px; /* Adjust height as needed */
   background-color: #fff; /* White background */
@@ -170,5 +177,66 @@ onMounted(async () => {
 
 .test{
   background-color: #fea8cd;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.event-card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.event-image {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  overflow: hidden;
+  
+}
+
+.event-image img {
+  width: 100%;
+  height: 100%;
+}
+
+.event-details {
+  padding: 5px;
+}
+
+.event-details h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.event-details h4 {
+  margin: 5px 0;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.event-details p {
+  margin: 5px 0;
+  font-size: 1rem;
+}
+
+.event-details button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.event-details button:hover {
+  background-color: #0056b3;
 }
 </style>

@@ -16,7 +16,7 @@ export const useStore = defineStore('eventStore', () => {
       try {
         const q = query(
           collection(db, 'events'),
-        //   where('date', '>=', new Date()),
+          where('date', '>=', new Date()),
           orderBy('date'),
         //   limit(6)
         );

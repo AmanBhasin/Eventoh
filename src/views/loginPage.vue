@@ -7,6 +7,8 @@
     <button @click="signInWithGoogle">submit</button>
     <!-- <button @click="signIn">email signin</button> -->
     <!-- <button @click="insertDB">check db working</button> -->
+    <br><br>
+    <button>signIn as Guest!</button>
   </div>
 </template>
 

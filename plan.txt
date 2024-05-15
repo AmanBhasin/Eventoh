@@ -16,3 +16,4 @@ NEW FEATURES TO IMPLEMENT
 *********************************************************************************************************
 1. design of login page, set up of db => use firebase
 2. while making search input bar, placeholder should be dynamic, and animation to be added, like 
+3. on clicking profile, or hovering around it, need a card, or a box below it, or tool tip, suggeting view your profile
