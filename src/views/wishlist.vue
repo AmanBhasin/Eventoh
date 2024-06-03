@@ -26,6 +26,7 @@ const wishlist = ref([]);
 const fetchWishlist = async () => {
     try {
         const q = query(collection(db, 'wishlist'),
+        where('wishingUser', '==', localStorage.getItem('userEmail')),
         orderBy('date')
     );
 

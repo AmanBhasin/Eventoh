@@ -11,9 +11,24 @@
 => tech stack => firebase, vue complexities, pinia, express, google free apis
 => codeforces see and solve, dsa practice, cs fundamentals, maths-pro,stat,linearAlgebra, projects, 
 => CI/CD => pipelines and study all the basics
+=> graph theory playlist, 
+=> learn tailwind and start creating new madan enterprises,
+=> development is what I liked, i always just want to develop systems
+=> I like Devops, writing docker files, creating images, deploying them to minikube, with deployable yaml files, and services. also connecting different ports, and dns, springboot => application properties => spring initialiser 
+=> azure free things => to develop and always up 
+=> web scraping, and getting data, 
+=> something on backend, and backend functions, noticing transactions and bokerage and profit trackers
+=> youtube clone, with react or vue
+=> real time chat app on a secure network
+=> video chat application
+=> madan enterprises, ecommerce shop
+=> focus, nothing is here nothing it is except lust, if you will not work automatically the future is in danger getting it, so try and leave thiis shit of getting that, that anyway will not get you till 25, here there is freedom if you don't there is nothing, so get up and go for your goals, i never said you shouldn't do this, what is the benefit of wasting and disturbing yourself
+=>  
 
 NEW FEATURES TO IMPLEMENT
 *********************************************************************************************************
 1. design of login page, set up of db => use firebase
 2. while making search input bar, placeholder should be dynamic, and animation to be added, like 
 3. on clicking profile, or hovering around it, need a card, or a box below it, or tool tip, suggeting view your profile
+4. zoom in of the image, so that logo looks good
+

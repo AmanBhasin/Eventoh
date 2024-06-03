@@ -17,9 +17,25 @@
       
       <label for="description">Description:</label>
       <textarea class="inp" id="description" v-model="description" required></textarea><br>
+
       
       <label for="venue">Venue:</label>
       <input class="inp" type="text" id="venue" v-model="venue" required><br>
+
+      <picture-input 
+      ref="imageRef"
+      width="60" 
+      height="60" 
+      margin="16" 
+      accept="image/jpeg,image/png" 
+      size="10" 
+      button-class="btn"
+      :custom-strings="{
+        upload: '<h1>Bummer!</h1>',
+        drag: 'Drag a 😺 GIF or GTFO'
+      }"
+      @change="imageDetails">
+    </picture-input>
       
       <button class="inp" type="submit">Add Event</button>
     </form>
@@ -29,8 +45,10 @@
   import { addDoc, collection } from 'firebase/firestore';
   import { db } from '../firebaseConfig.js';
   import {ref, computed, onMounted} from 'vue';
+  import { useRouter } from 'vue-router';
+  import PictureInput from 'vue-picture-input';
+  import {useStore} from '../store/store.js'
 
-  
   const eventName = ref('');
   const date = ref('');
   const startTime = ref('');
@@ -38,7 +56,19 @@
   const clubName = ref('');
   const description = ref('');
   const venue = ref('');
-  
+  const router = useRouter();
+  const imageRef = ref(null);
+  const store = useStore();
+  const imageURL = ref('');
+
+  const imageDetails = (e) => {
+    store.image = imageRef.value;
+    
+   console.log(imageURL.value);
+   
+  }
+
+
   const addEvent = async () => {
     try {
       console.log(date.value, " ", endTime.value);
@@ -61,6 +91,9 @@
       clubName.value = '';
       description.value = '';
       venue.value = '';
+
+      // push to main events page
+      router.push({name: 'home'});
     } catch (error) {
       console.error('Error adding event: ', error);
     }
@@ -70,7 +103,7 @@
 <style>
   .inp{
     margin-top: 3px;
-    background-color: lightgray;
+    background-color: rgb(219, 218, 218);
     border-width: 14px;
     border-color: black;
     border-radius: 2px;

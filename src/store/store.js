@@ -9,6 +9,7 @@ export const useStore = defineStore('eventStore', () => {
     userEmail: ref(''),
     userName: ref(''),
     photoURL: ref(''),
+    image: ref(null),
   };
 
   const actions = {
@@ -34,6 +35,8 @@ export const useStore = defineStore('eventStore', () => {
         console.error('Error fetching upcoming events:', error);
       }
     },
+
+
   };
 
   // Return the state and actions

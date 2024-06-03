@@ -5,9 +5,12 @@
       <a href="https://www.google.com" style="text-decoration: none;">
         <img src="../assets/logoeventoh.png" alt="logo" class="logo">
       </a>
-      <input type="text" v-model="searchedQuery" placeholder="Search Events" class="search-input">
+      <input type="text" v-model="searchedQuery" 
+      @input="searchEvent(searchedQuery)"
+      placeholder="Search Events" class="search-input">
       <router-link to="/create" class="nav-item">Post Event</router-link>
       <div class="nav-item" @click="showWishlist">Wishlist</div>
+      <div class="nav-item" @click="missedEvents">Missed Events</div>
       <div class="nav-item profile">
         <p>{{store.userName}}</p>
         {{ console.log(store.userName)}} 
@@ -29,7 +32,10 @@
         <p>{{ formatDate(event.date) }}</p>
         <p>{{ formatTime(event.startTime) }} - {{ formatTime(event.endTime) }}</p>
         <p>{{ event.venue }}</p>
+
+        
         <button type="button" @click="addToWishlist(event)">Add to Wishlist</button>
+        <button @click="removeFromFeed(event)">Remove From Feed</button>
       </div>
     </div>
   </div>
@@ -40,19 +46,37 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import {useStore} from '../store/store.js'
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig.js';
 import { auth } from '../firebaseConfig.js';
 // import router from '@/router';
 import { useRouter } from 'vue-router';
+
+
 const events = ref([]);
 const store = useStore();
 const searchedQuery = ref('');
 const router = useRouter();
+const image = ref();
+
+const removeFromFeed = async (event) => {
+  console.log("remove button has been clicked");
+  let tempEvents = store.events;
+  store.events = tempEvents.filter(e => e!==event);
+  events.value = store.events;
+
+  try {
+    const eventId = event.id;
+    const eventRef = doc(db, 'events', eventId);
+    await deleteDoc(eventRef);
+    console.log("item removed from feed is: ", event.id);
+  } catch (error) {
+    console.log("can not remove item from the feed due to:", error);  
+  }
+
+}
 
 const addToWishlist = async (event) => {
-  // only way is to add document in collection called wishlist
-  // single time running, 
   try {
       console.log(event.date, " ", event.startTime);
       const docRef = await addDoc(collection(db, 'wishlist'), {
@@ -63,6 +87,7 @@ const addToWishlist = async (event) => {
         clubName: event.clubName,
         description: event.description,
         venue: event.venue,
+        wishingUser: store.userEmail,
       });
       console.log('Event added with ID: ', docRef.id);
       
@@ -73,7 +98,11 @@ const addToWishlist = async (event) => {
 }
 
 const searchEvent = (searchedQuery) => {
-  console.log("current search is based on the following query: ", searchedQuery);
+  events.value = events.value.filter(e => (e.eventName.toLowerCase().includes(searchedQuery.toLowerCase()) || e.clubName.toLowerCase().includes(searchedQuery.toLowerCase())));
+
+  if(!searchedQuery){
+    events.value = store.events;
+  }
 }
 
 const showWishlist = () => {
@@ -109,10 +138,6 @@ const formatTime = (timestamp) => {
   return `${hours}:${minutes} ${ampm}`;
 };
 
-// // Usage example
-// const timestamp = { seconds: 1715020200, nanoseconds: 0 };
-// console.log(formatTime(timestamp)); // Output: "06:30 PM"
-
 
 onMounted(async () => {
   await store.fetchUpcomingEvents();
@@ -121,6 +146,7 @@ onMounted(async () => {
   store.userEmail = localStorage.getItem('userEmail');
   store.photoURL = localStorage.getItem('photoURL');
 })
+
 </script>
 
 <!--  -->
