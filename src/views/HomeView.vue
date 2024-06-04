@@ -10,7 +10,7 @@
       placeholder="Search Events" class="search-input">
       <router-link to="/create" class="nav-item">Post Event</router-link>
       <div class="nav-item" @click="showWishlist">Wishlist</div>
-      <div class="nav-item" @click="missedEvents">Missed Events</div>
+      <div class="nav-item" @click="missedEvents">Past Events</div>
       <div class="nav-item profile">
         <p>{{store.userName}}</p>
         {{ console.log(store.userName)}} 
@@ -24,7 +24,7 @@
     <div v-for="event in events" :key="event.id" class="event-card">
       <div class="event-image">
         <!-- Assuming you have an image URL in the event object -->
-        <img src="../assets/logoeventoh.png" alt="Event Image">
+        <img :src="event.imageURL" alt="Event Image">
       </div>
       <div class="event-details">
         <h3>{{ event.eventName }}</h3>
@@ -95,6 +95,10 @@ const addToWishlist = async (event) => {
       console.error('Error adding event: ', error);
     }
 
+}
+
+const missedEvents = async() => {
+  router.push({name: 'pastEvents'})
 }
 
 const searchEvent = (searchedQuery) => {

@@ -8,7 +8,7 @@
     <!-- <button @click="signIn">email signin</button> -->
     <!-- <button @click="insertDB">check db working</button> -->
     <br><br>
-    <button >signIn as Guest!</button>
+    <button @click="signInAsGuest">signIn as Guest!</button>
   </div>
 </template>
 
@@ -54,6 +54,11 @@ const router = useRouter();
     } catch (error) {
       console.log(error);
     }
+  }
+
+  const signInAsGuest = () => {
+    localStorage.setItem('username', "Guest");
+    router.push({name: 'home'});
   }
 
 const insertDB = async () => {

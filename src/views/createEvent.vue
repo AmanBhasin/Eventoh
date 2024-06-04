@@ -22,7 +22,7 @@
       <label for="venue">Venue:</label>
       <input class="inp" type="text" id="venue" v-model="venue" required><br>
 
-      <picture-input 
+      <!-- <picture-input 
       ref="imageRef"
       width="60" 
       height="60" 
@@ -35,7 +35,11 @@
         drag: 'Drag a 😺 GIF or GTFO'
       }"
       @change="imageDetails">
-    </picture-input>
+    </picture-input> -->
+      <label for="thumbnails">Provide Thumbnail of the Event</label>
+      <input type="file" @change="uploadImage">
+      <img :src="imageURL" v-if="imageURL" alt="couldn't display" style="height: 300px; width: 300px;">
+
       
       <button class="inp" type="submit">Add Event</button>
     </form>
@@ -48,6 +52,8 @@
   import { useRouter } from 'vue-router';
   import PictureInput from 'vue-picture-input';
   import {useStore} from '../store/store.js'
+  import {getDownloadURL, ref as storageRef, uploadBytesResumable } from 'firebase/storage';
+  import {storage} from '../firebaseConfig.js';
 
   const eventName = ref('');
   const date = ref('');
@@ -57,17 +63,34 @@
   const description = ref('');
   const venue = ref('');
   const router = useRouter();
-  const imageRef = ref(null);
   const store = useStore();
   const imageURL = ref('');
 
-  const imageDetails = (e) => {
-    store.image = imageRef.value;
+  const uploadImage = async (event) => {
+    const file = event.target.files[0];
+    if(!file) return;
     
-   console.log(imageURL.value);
-   
-  }
+    const storageReference = storageRef(storage, `images/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageReference, file);
 
+    uploadTask.on('state_changed', (snapshot) => {
+      console.log("State changed");
+    },
+    (error) => {
+      console.log(error);
+    },
+    async () => {
+      try {
+        console.log("function is in try block");
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        imageURL.value = downloadURL
+        // store.image = imageURL.value;
+        // console.log(store.image);
+      } catch (error) {
+        console.log("function in error block");
+      }
+    })
+  }
 
   const addEvent = async () => {
     try {
@@ -80,6 +103,7 @@
         clubName: clubName.value,
         description: description.value,
         venue: venue.value,
+        imageURL: imageURL.value,
       });
       console.log('Event added with ID: ', docRef.id);
       
@@ -91,6 +115,7 @@
       clubName.value = '';
       description.value = '';
       venue.value = '';
+      imageURL.value = '',
 
       // push to main events page
       router.push({name: 'home'});

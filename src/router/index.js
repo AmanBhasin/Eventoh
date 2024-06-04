@@ -4,6 +4,7 @@ import loginPage from '../views/loginPage.vue'
 import eventPage from '../views/eventPage.vue'
 import createEvent from '../views/createEvent.vue'
 import wishlist from '../views/wishlist.vue'
+import pastEvents from '../views/pastEvents.vue'
 const routes = [
   {
     path: '/',
@@ -34,7 +35,12 @@ const routes = [
     path: '/create',
     name: 'CreateEvent',
     component: createEvent,
-  }
+  },
+  {
+    path: '/pastEvents',
+    name: 'pastEvents',
+    component: pastEvents
+  },
 
 ]
 
